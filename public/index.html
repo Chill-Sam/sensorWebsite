@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>Sensor Firebase App</title>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
+
+    <script>
+    const firebaseConfig = {};
+
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var database = firebase.database();
+</script>
+<script src="app.js" defer></script>
+
+</head>
+<body>
+  <div class="box" id="header-wrapper">
+    <h1>Sensor Website Hitachigymnasiet</h1>
+    <h2>Jonathan Wåhrenberg</h2>
+  </div>
+  <div id="center-wrapper">
+    <div class="box" id="setting-wrapper">
+      <button type="button">Light</button>
+    </div>
+    <div class="box" id="measurement-wrapper">
+      <div class="measurement">
+        <div id="time"></div>
+        <div id="temperature"></div>
+        <div id="humidity"></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
