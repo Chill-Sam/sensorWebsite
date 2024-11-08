@@ -40,14 +40,22 @@
   </div>
   <div id="center-wrapper">
     <div class="box" id="setting-wrapper">
+      <button id="date-selector" type="button">
+
+  <div id="popup-overlay" tabindex="-1">
+    <div id="popup-container">
+      <input type="date" id="date-input" onblur="document.getElementById('toggle-popup').focus()" />
+      <p id="selected-date">No date selected</p>
+    </div>
+  </div>
+        </button>
+
+      <button type="button">Light</button>
       <button type="button">Light</button>
     </div>
     <div class="box" id="measurement-wrapper">
-      <div class="measurement">
-        <div id="time"></div>
-        <div id="temperature"></div>
-        <div id="humidity"></div>
-      </div>
+        <div class="box graph-container"></div>
+        <div class="box graph-container"></div>
     </div>
   </div>
 </body>
