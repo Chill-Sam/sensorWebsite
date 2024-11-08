@@ -42,26 +42,6 @@ body {
       pointer-events: none;
 }
 
-#popup-container {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-      pointer-events: all;
-}
-
-#date-selector:focus-within #popup-overlay {
-    display: flex;
-}
-
-#date-selector:focus-within {
-    disabled: disabled;
-}
-
-#date-selector:hover {
-    opacity: 1;
-}
-
 #header-wrapper {
     border: thick double #ffffff;
     height: max-content;
@@ -103,8 +83,11 @@ body {
     grid-template-columns: 1fr 2fr 1fr;
 }
 
-#setting-wrapper button {
+#setting-wrapper button, input {
     border-radius: 15px;
+}
+
+#date-input {
 }
 
 #measurement-wrapper {
@@ -131,10 +114,7 @@ body {
         grid-template-rows: auto auto;
     }
     
-    #setting-wrapper button {
-    }
-
-    #date-selector {
+    #date-input {
         grid-column: 1 / -1;
     }
 }

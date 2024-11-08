@@ -6,11 +6,7 @@
     <link rel="stylesheet" href="index.css">
     <title>Sensor Firebase App</title>
 
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-        https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
 
     <script>
@@ -21,7 +17,6 @@
     firebase.initializeApp(firebaseConfig);
     var database = firebase.database();
 </script>
-<script src="app.js" defer></script>
 
 </head>
 <body>
@@ -31,17 +26,8 @@
   </div>
   <div id="center-wrapper">
     <div class="box" id="setting-wrapper">
-      <button id="date-selector" type="button">
-
-  <div id="popup-overlay" tabindex="-1">
-    <div id="popup-container">
-      <input type="date" id="date-input" onblur="document.getElementById('toggle-popup').focus()" />
-      <p id="selected-date">No date selected</p>
-    </div>
-  </div>
-        </button>
-
       <button type="button">Light</button>
+      <input type="date" name="date-input">
       <button type="button">Light</button>
     </div>
     <div class="box" id="measurement-wrapper">
