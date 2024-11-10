@@ -5,17 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="index.css" />
         <title>Sensor Firebase App</title>
-
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
-        <script src="main.js" type="text/javascript"></script>
-        <script>
-            const firebaseConfig = {};
-
-            // Initialize Firebase
-            firebase.initializeApp(firebaseConfig);
-            var database = firebase.database();
-        </script>
+        <script></script>
     </head>
     <body>
         <div class="box" id="header-wrapper">
@@ -24,17 +17,17 @@
         </div>
         <div id="center-wrapper">
             <div class="box" id="setting-wrapper">
-                <div class="toggle-button" id="toggleOnOff" data-state="off">
-                    <div class="slider"></div>
-                    <span class="label" id="labelOnOff">OFF</span>
-                </div>
-                <input type="date" name="date-input" />
-                <button type="button">Screen</button>
+                <button type="button">Temperature</button>
+                <input id="date-input" type="date" name="date-input" />
+                <button type="button">Humidity</button>
             </div>
             <div class="box" id="measurement-wrapper">
-                <div class="box graph-container"></div>
-                <div class="box graph-container"></div>
+                <div id="current-measurement"></div>
+                <div id="measurement-container">
+                    <canvas id="measurement-graph"></canvas>
+                </div>
             </div>
         </div>
+        <script src="main.js" type="text/javascript"></script>
     </body>
 </html>
