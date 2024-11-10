@@ -2,6 +2,8 @@
   "rules": {
     ".read": true,
     ".write": "auth != null",
-    ".indexOn": "timestamp"
+    "readings": {
+      ".indexOn": "timestamp"
+    }
   }
 }
