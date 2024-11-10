@@ -151,24 +151,25 @@ function updateChart(labels, values, type) {
         measurementChart.update();
 }
 
-function updateData() {
-    currentDataType = event.target.innerText.toLowerCase();
-    fetchData(currentDataType);
-}
-
 document.querySelectorAll("#setting-wrapper button").forEach((button) => {
     button.addEventListener("click", (event) => {
-        updateData();
+        currentDataType = event.target.innerText.toLowerCase();
+        fetchData(currentDataType);
     });
 });
 
 document.getElementById("date-input").addEventListener("change", (event) => {
-    updateData();
+    fetchData();
 });
 
+function updateData() {
+    // workaround function
+    fetchData(currentDataType);
+}
+
 initializeChart();
-updateData();
-setInterval(updateData, 2500);
+fetchData(currentDataType);
+setInterval(updateData, 2500); // workaround bug
 
 getLatestReading();
 setInterval(getLatestReading, 2500);
