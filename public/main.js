@@ -138,4 +138,33 @@ function updateChart(timestamps, temperatures, humidities) {
     myChart.update("active"); // `active` mode enables smooth animations
 }
 
-setInterval(getDataForSelectedDate, 50);
+// Update chart
+function updateChart(labels, values, type) {
+    measurementChart.data.labels = labels;
+    measurementChart.data.datasets[0].data = values;
+    measurementChart.data.datasets[0].label =
+        type.charAt(0).toUpperCase() + type.slice(1);
+    (measurementChart.data.datasets[0].borderColor =
+        type == "temperature"
+            ? "rgba(255, 165, 0, 1)"
+            : "rgba(75, 192, 192, 1)"),
+        measurementChart.update();
+}
+
+document.querySelectorAll("#setting-wrapper button").forEach((button) => {
+    button.addEventListener("click", (event) => {
+        currentDataType = event.target.innerText.toLowerCase();
+        fetchData(currentDataType);
+    });
+});
+
+document.getElementById("date-input").addEventListener("change", (event) => {
+    fetchData(currentDataType);
+});
+
+initializeChart();
+fetchData(currentDataType);
+setInterval(fetchData, 2500, currentDataType);
+
+getLatestReading();
+setInterval(getLatestReading, 2500);
