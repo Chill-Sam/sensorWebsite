@@ -21,31 +21,22 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 var database = firebase.database();
 
-// Chart
-let myChart;
+var measurementChart;
 
-// Initialize an empty chart
 function initializeChart() {
     const ctx = document.getElementById("measurement-graph").getContext("2d");
-    myChart = new Chart(ctx, {
+    // Create empty chart
+    measurementChart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: [], // Empty labels array
+            labels: [],
             datasets: [
                 {
-                    label: "Temperature (°C)",
+                    label: [],
                     data: [],
-                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderColor: "rgba(255, 165, 0, 1)",
+                    borderWidth: 2,
                     fill: false,
-                    yAxisID: "y1",
-                },
-
-                {
-                    label: "Humidity (%)",
-                    data: [],
-                    borderColor: "rgba(153, 102, 255, 1)",
-                    fill: false,
-                    yAxisID: "y2",
                 },
             ],
         },
@@ -58,50 +49,29 @@ function initializeChart() {
                     type: "category",
                     title: {
                         display: true,
+
                         text: "Time",
                     },
                 },
-                y1: {
-                    type: "linear",
-
-                    position: "left",
-                    title: {
-                        display: true,
-                        text: "Temperature (°C)",
-                    },
-                },
-                y2: {
-                    type: "linear",
-                    position: "right",
-                    title: {
-                        display: true,
-                        text: "Humidity (%)",
-                    },
-                    grid: {
-                        drawOnChartArea: false,
-                    },
-                },
+                y: { beginAtZero: true },
             },
         },
     });
 }
 
-// Call this function once to initialize the chart with empty data
-initializeChart();
-
-// Function to update the chart with new data
-function updateChart(timestamps, temperatures, humidities) {
-    // Clear the existing data if necessary
-    myChart.data.labels = timestamps;
-    myChart.data.datasets[0].data = temperatures; // Update Temperature dataset
-    myChart.data.datasets[1].data = humidities; // Update Humidity dataset
-
-    // Update the chart with smooth animation
-
-    myChart.update("active"); // `active` mode enables smooth animations
+function clearChart() {
+    measurementChart.data.labels = []; // Clear the labels
+    measurementChart.data.datasets.forEach((dataset) => {
+        dataset.data = []; // Clear the data points
+    });
+    measurementChart.update(); // Update the chart to reflect changes
 }
 
-function getDataForSelectedDate() {
+let currentDataType = "temperature"; // Default data type
+let selectedDate = null;
+
+// Get data from Firebase
+function fetchData(type) {
     const dateInput = document.getElementById("date-input").value;
     if (!dateInput) {
         return;
@@ -113,6 +83,7 @@ function getDataForSelectedDate() {
 
     const readingsRef = database.ref("readings");
     readingsRef
+
         .orderByChild("timestamp")
         .startAt(startOfDay)
 
@@ -122,6 +93,7 @@ function getDataForSelectedDate() {
             const data = snapshot.val();
             if (data) {
                 // Process data for Chart.js
+
                 const timestamps = [];
                 const temperatures = [];
                 const humidities = [];
@@ -135,8 +107,14 @@ function getDataForSelectedDate() {
                     humidities.push(entry.humidity);
                 });
 
-                // Render chart with processed data
-                updateChart(timestamps, temperatures, humidities);
+                if (type == "temperature") {
+                    // Render chart with processed data
+                    updateChart(timestamps, temperatures, type);
+                } else if (type == "humidity") {
+                    updateChart(timestamps, humidities, type);
+                }
+            } else {
+                clearChart();
             }
         })
 
@@ -145,14 +123,53 @@ function getDataForSelectedDate() {
         });
 }
 
-function updateChart(timestamps, temperatures, humidities) {
-    // Clear the existing data if necessary
-    myChart.data.labels = timestamps;
-    myChart.data.datasets[0].data = temperatures; // Update Temperature dataset
-    myChart.data.datasets[1].data = humidities; // Update Humidity dataset
-
-    // Update the chart with smooth animation
-    myChart.update("active"); // `active` mode enables smooth animations
+function getLatestReading() {
+    const currentTemperature = document.getElementById("current-temperature");
+    const currentHumidity = document.getElementById("current-humidity");
+    const readingsRef = database.ref("readings");
+    readingsRef
+        .orderByKey()
+        .limitToLast(1)
+        .once("value", (snapshot) => {
+            if (snapshot.exists()) {
+                const latestReading = Object.values(snapshot.val())[0];
+                currentTemperature.innerHTML = latestReading.temperature + "°C";
+                currentHumidity.innerHTML = latestReading.humidity + "%";
+            } else {
+                console.log("No readings available");
+            }
+        })
+        .catch((error) => {
+            console.error("Error fetching latest reading:", error);
+        });
 }
 
-setInterval(getDataForSelectedDate, 50);
+// Update chart
+function updateChart(labels, values, type) {
+    measurementChart.data.labels = labels;
+    measurementChart.data.datasets[0].data = values;
+    measurementChart.data.datasets[0].label =
+        type.charAt(0).toUpperCase() + type.slice(1);
+    (measurementChart.data.datasets[0].borderColor =
+        type == "temperature"
+            ? "rgba(255, 165, 0, 1)"
+            : "rgba(75, 192, 192, 1)"),
+        measurementChart.update();
+}
+
+document.querySelectorAll("#setting-wrapper button").forEach((button) => {
+    button.addEventListener("click", (event) => {
+        currentDataType = event.target.innerText.toLowerCase();
+        fetchData(currentDataType);
+    });
+});
+
+document.getElementById("date-input").addEventListener("change", (event) => {
+    selectedDate = new Date(event.target.value);
+    fetchData(currentDataType, selectedDate);
+});
+
+initializeChart();
+fetchData(currentDataType, selectedDate);
+getLatestReading();
+setInterval(getLatestReading, 1000);
