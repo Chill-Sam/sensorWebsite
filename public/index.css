@@ -75,6 +75,7 @@ input {
 }
 
 #measurement-wrapper {
+    overflow: scroll;
     margin: 1rem;
     flex: 1;
     padding: 0.5rem;
