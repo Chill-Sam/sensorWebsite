@@ -151,20 +151,24 @@ function updateChart(labels, values, type) {
         measurementChart.update();
 }
 
+function updateData() {
+    currentDataType = event.target.innerText.toLowerCase();
+    fetchData(currentDataType);
+}
+
 document.querySelectorAll("#setting-wrapper button").forEach((button) => {
     button.addEventListener("click", (event) => {
-        currentDataType = event.target.innerText.toLowerCase();
-        fetchData(currentDataType);
+        updateData();
     });
 });
 
 document.getElementById("date-input").addEventListener("change", (event) => {
-    fetchData(currentDataType);
+    updateData();
 });
 
 initializeChart();
-fetchData(currentDataType);
-setInterval(fetchData, 2500, currentDataType);
+updateData();
+setInterval(updateData, 2500);
 
 getLatestReading();
 setInterval(getLatestReading, 2500);
