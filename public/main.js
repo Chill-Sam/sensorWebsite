@@ -165,11 +165,12 @@ document.querySelectorAll("#setting-wrapper button").forEach((button) => {
 });
 
 document.getElementById("date-input").addEventListener("change", (event) => {
-    selectedDate = new Date(event.target.value);
-    fetchData(currentDataType, selectedDate);
+    fetchData(currentDataType);
 });
 
 initializeChart();
-fetchData(currentDataType, selectedDate);
+fetchData(currentDataType);
+setInterval(fetchData, 2500, currentDataType);
+
 getLatestReading();
-setInterval(getLatestReading, 1000);
+setInterval(getLatestReading, 2500);
