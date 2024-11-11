@@ -89,7 +89,7 @@ function clearDataset(type) {
 
 let selectedTemp = true;
 let selectedHum = false;
-//document.getElementById("date-input").valueAsDate = new Date(); // Set selected date to today
+document.getElementById("date-input").valueAsDate = new Date(); // Set selected date to today
 let selectedDate = null; // init selected date (gets updated later)
 
 // Get data from Firebase
