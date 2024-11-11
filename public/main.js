@@ -20,15 +20,8 @@ function initializeChart() {
                     data: [],
                     borderColor: "rgba(75, 192, 192, 1)",
                     fill: false,
-                    yAxisID: "y1",
-                },
-
-                {
-                    label: "Humidity (%)",
-                    data: [],
-                    borderColor: "rgba(153, 102, 255, 1)",
-                    fill: false,
-                    yAxisID: "y2",
+                    pointRadius: 0,
+                    tension: 0.1
                 },
             ],
         },
