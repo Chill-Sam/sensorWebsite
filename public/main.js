@@ -79,7 +79,7 @@ function clearChart() {
 }
 
 let currentDataType = "temperature"; // Default data type
-document.getElementById("input-date").valueAsDate = new Date(); // Set selected date to today
+//document.getElementById("date-input").valueAsDate = new Date(); // Set selected date to today
 let selectedDate = null; // init selected date (gets updated later)
 
 // Get data from Firebase
@@ -90,14 +90,14 @@ function fetchData(type) {
     }
 
     const selectedDate = new Date(dateInput);
-    const startOfDay = selectedDate.setHours(0, 0, 0, 0);
-    const endOfDay = selectedDate.setHours(23, 59, 59, 999);
+    const startOfDay = selectedDate.setHours(0, 0, 0) / 1000;
+    const endOfDay = selectedDate.setHours(23, 59, 59) / 1000;
+
 
     const readingsRef = database.ref("readings");
     readingsRef
         .orderByChild("timestamp")
         .startAt(startOfDay)
-
         .endAt(endOfDay)
 
         .once("value", (snapshot) => {
@@ -110,7 +110,7 @@ function fetchData(type) {
 
                 Object.values(data).forEach((entry) => {
                     timestamps.push(
-                        new Date(entry.timestamp).toLocaleTimeString(),
+                        new Date(entry.timestamp * 1000).toLocaleTimeString('sv-SE', { timeZone: 'Europe/Berlin'})
                     );
 
                     temperatures.push(entry.temperature);
