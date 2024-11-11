@@ -16,12 +16,23 @@ function initializeChart() {
             labels: [], // Empty labels array
             datasets: [
                 {
-                    label: "Temperature (°C)",
+                    label: "Temperature",
                     data: [],
                     borderColor: "rgba(75, 192, 192, 1)",
                     fill: false,
                     pointRadius: 0,
-                    tension: 0.1
+                    tension: 0.1,
+                    yAxisID: "y1",
+                },
+                {
+                    label: "Humidity",
+                    data: [],
+                    borderColor: "rgba(75, 192, 192, 1)",
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0,
+                    tension: 0.1,
+                    yAxisID: "y2",
                 },
             ],
         },
@@ -39,7 +50,6 @@ function initializeChart() {
                 },
                 y1: {
                     type: "linear",
-
                     position: "left",
                     title: {
                         display: true,
@@ -71,7 +81,14 @@ function clearChart() {
     measurementChart.update(); // Update the chart to reflect changes
 }
 
-let currentDataType = "temperature"; // Default data type
+function clearDataset(type) {
+    let i = type == "temperature" ? 0 : 1;
+    measurementChart.data.datasets[i].data = [];
+    measurementChart.update();
+}
+
+let selectedTemp = true;
+let selectedHum = false;
 //document.getElementById("date-input").valueAsDate = new Date(); // Set selected date to today
 let selectedDate = null; // init selected date (gets updated later)
 
@@ -85,7 +102,6 @@ function fetchData(type) {
     const selectedDate = new Date(dateInput);
     const startOfDay = selectedDate.setHours(0, 0, 0) / 1000;
     const endOfDay = selectedDate.setHours(23, 59, 59) / 1000;
-
 
     const readingsRef = database.ref("readings");
     readingsRef
@@ -103,7 +119,10 @@ function fetchData(type) {
 
                 Object.values(data).forEach((entry) => {
                     timestamps.push(
-                        new Date(entry.timestamp * 1000).toLocaleTimeString('sv-SE', { timeZone: 'Europe/Berlin'})
+                        new Date(entry.timestamp * 1000).toLocaleTimeString(
+                            "sv-SE",
+                            { timeZone: "Europe/Berlin" },
+                        ),
                     );
 
                     temperatures.push(entry.temperature);
@@ -133,6 +152,16 @@ function getLatestReading() {
                 const latestReading = Object.values(snapshot.val())[0];
                 currentTemperature.innerHTML = latestReading.temperature + "°C";
                 currentHumidity.innerHTML = latestReading.humidity + "%";
+
+                currentTemperature.style.color =
+                    latestReading.temperature > 24
+                        ? "rgba(255, 0, 0, 1)"
+                        : "rgba(255, 165, 0, 1)";
+
+                currentHumidity.style.color =
+                    latestReading.humidity > 40
+                        ? "rgba(0, 0, 255, 1)"
+                        : "rgba(75, 192, 192, 1)";
             } else {
                 console.log("No readings available");
             }
@@ -145,10 +174,11 @@ function getLatestReading() {
 // Update chart
 function updateChart(labels, values, type) {
     measurementChart.data.labels = labels;
-    measurementChart.data.datasets[0].data = values;
-    measurementChart.data.datasets[0].label =
+    let i = type == "temperature" ? 0 : 1; // update temperature dataset or humidity
+    measurementChart.data.datasets[i].data = values;
+    measurementChart.data.datasets[i].label =
         type.charAt(0).toUpperCase() + type.slice(1);
-    (measurementChart.data.datasets[0].borderColor =
+    (measurementChart.data.datasets[i].borderColor =
         type == "temperature"
             ? "rgba(255, 165, 0, 1)"
             : "rgba(75, 192, 192, 1)"),
@@ -158,8 +188,23 @@ function updateChart(labels, values, type) {
 // Setup event handlers for updating the graph
 document.querySelectorAll("#setting-wrapper button").forEach((button) => {
     button.addEventListener("click", (event) => {
-        currentDataType = event.target.innerText.toLowerCase();
-        fetchData(currentDataType);
+        // Dirty solution, but fixes the state handling
+        let selectedType = event.target.innerText.toLowerCase();
+        if (selectedType == "temperature") {
+            selectedTemp = !selectedTemp;
+            if (selectedTemp) {
+                fetchData("temperature");
+            } else {
+                clearDataset("temperature");
+            }
+        } else if (selectedType == "humidity") {
+            selectedHum = !selectedHum;
+            if (selectedHum) {
+                fetchData("humidity");
+            } else {
+                clearDataset("humidity");
+            }
+        }
     });
 });
 
@@ -169,13 +214,17 @@ document.getElementById("date-input").addEventListener("change", (event) => {
 
 function updateData() {
     // workaround function
-    fetchData(currentDataType);
+    if (selectedTemp) {
+        fetchData("temperature");
+    } else if (selectedHum) {
+        fetchData("humidity");
+    }
 }
 
 // Run functions and setup intervals
 
 initializeChart();
-fetchData(currentDataType);
+updateData();
 setInterval(updateData, 2500); // workaround bug
 
 getLatestReading();
