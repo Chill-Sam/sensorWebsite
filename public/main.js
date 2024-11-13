@@ -216,7 +216,9 @@ function updateData() {
     // workaround function
     if (selectedTemp) {
         fetchData("temperature");
-    } else if (selectedHum) {
+    }
+
+    if (selectedHum) {
         fetchData("humidity");
     }
 }
