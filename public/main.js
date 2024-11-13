@@ -178,11 +178,11 @@ function updateChart(labels, values, type) {
     measurementChart.data.datasets[i].data = values;
     measurementChart.data.datasets[i].label =
         type.charAt(0).toUpperCase() + type.slice(1);
-    (measurementChart.data.datasets[i].borderColor =
+    measurementChart.data.datasets[i].borderColor =
         type == "temperature"
             ? "rgba(255, 165, 0, 1)"
-            : "rgba(75, 192, 192, 1)"),
-        measurementChart.update();
+            : "rgba(75, 192, 192, 1)";
+    measurementChart.update();
 }
 
 // Setup event handlers for updating the graph
