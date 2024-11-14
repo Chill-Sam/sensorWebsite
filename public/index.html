@@ -17,12 +17,18 @@
         </div>
         <div id="center-wrapper">
             <div class="box" id="setting-wrapper">
-                <button type="button">Temperature</button>
+                <button id="temperature-button" type="button">
+                    Temperature
+                </button>
                 <input id="date-input" type="date" name="date-input" />
-                <button type="button">Humidity</button>
+                <button id="humidity-button" type="button">Humidity</button>
             </div>
             <div class="box" id="measurement-wrapper">
-                <div id="current-measurement"></div>
+                <div id="current-measurement">
+                    <div class="box">Current:</div>
+                    <div class="box" id="current-temperature">NA°C</div>
+                    <div class="box" id="current-humidity">NA%</div>
+                </div>
                 <div id="measurement-container">
                     <canvas id="measurement-graph"></canvas>
                 </div>
