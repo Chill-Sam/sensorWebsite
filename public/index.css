@@ -73,7 +73,7 @@ body {
 #setting-wrapper button,
 input {
     border-radius: 15px;
-    font-size: 0.5rem;
+    font-size: 1.5rem;
 }
 
 #temperature-button {
@@ -157,5 +157,10 @@ input {
 
     #current-measurement {
         flex-direction: column;
+    }
+
+    #setting-wrapper button,
+    input {
+        font-size: 0.5rem;
     }
 }
